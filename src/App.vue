@@ -1,32 +1,62 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app>
+      <router-link to="/" replace>
+        <v-img src="@/assets/logo.png" max-width="45" height="45"></v-img>
+      </router-link>
+      &nbsp;
+      <v-toolbar-title class="headline">
+        <router-link to="/" replace>
+          <span>Anki Freeware</span>
+        </router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon v-on:click="() => $router.replace('/search')">
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <v-container>
+        <router-view></router-view>
+      </v-container>
+    </v-main>
+    <v-footer
+      padless
+    >
+      <v-card
+        tile
+        width="100%"
+        class="lighten-1 text-center"
+        elevation="5"
+        app
+      >
+        <v-card-text>
+          Version <router-link to="/about" replace>{{version.version}}</router-link> ({{version.date}})
+          <br /> &copy; 2021 - {{new Date().getFullYear()}} — <a href="mailto:magicm-96@gmx.de"><strong>MagicM</strong></a>
+        </v-card-text>
+      </v-card>
+    </v-footer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import store from './store/index'
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'App',
+  data () {
+    return {
+      version: store.state.version
+    }
+  },
+  methods: {
+  }
 }
+</script>
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+<style scoped>
+a {
+  color: var(--v-anchor-link) !important;
 }
 </style>
