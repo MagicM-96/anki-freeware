@@ -33,6 +33,18 @@
         x-large
         color="primary"
         dark
+        v-on:click="$router.push('/data/manage')"
+      >
+        Daten verwalten
+      </v-btn>
+    </div>
+    <br />
+    <div>
+      <v-btn
+        rounded
+        x-large
+        color="primary"
+        dark
         v-on:click="$router.push('/expimp')"
       >
         Export / Import

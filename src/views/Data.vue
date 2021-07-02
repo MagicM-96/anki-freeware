@@ -1,8 +1,9 @@
 <template>
   <v-main>
     <v-icon @click="$router.go(-1)" x-large>mdi-arrow-left-circle-outline</v-icon>
-    <h1>Neue Daten erstellen</h1>
-    <template v-if="view === 'create'">
+    <template v-if="view === 'create' || view === 'edit'">
+      <h1 v-if="view === 'create'">Neue Daten erstellen</h1>
+      <h1 v-else-if="view === 'edit'">Daten bearbeiten</h1>
       <v-text-field
         label="Name"
         :rules="rules"
@@ -81,8 +82,19 @@
         color="primary"
         dark
         v-on:click="createData()"
+        v-if="view === 'create'"
       >
         Daten Hinzufügen
+      </v-btn>
+      <v-btn
+        rounded
+        x-large
+        color="primary"
+        dark
+        v-on:click="saveData()"
+        v-else-if="view === 'edit'"
+      >
+        Daten Speichern
       </v-btn>
     </template>
     <template v-else>
@@ -110,6 +122,19 @@ export default {
       valid: false
     }
   },
+  computed: {
+    activeItem: function () {
+      return this.$store.state.practises[this.$route.params.item] || {}
+    },
+    itemPic: function () {
+      return this.$store.state.pictures[this.activeItem.pic]
+    }
+  },
+  mounted: function () {
+    if (this.activeItem !== {}) {
+      this.loadItem()
+    }
+  },
   methods: {
     createData () {
       if (!this.name || !this.picture || this.entities.length === 0) {
@@ -124,6 +149,19 @@ export default {
         this.$refs.form.reset()
         this.$refs.fileupload.reset()
       }
+    },
+    saveData () {
+      if (!this.name || !this.picture || this.entities.length === 0) {
+        alert('Es fehlen benötigte Daten!')
+      } else {
+        this.$store.commit('editItem', { index: this.$route.params.item, oldPic: this.activeItem.pic, name: this.name, entities: this.entities, picture: this.picture, id: uuid() })
+        this.$router.go(-1)
+      }
+    },
+    loadItem () {
+      this.name = this.activeItem.name
+      this.entities = this.activeItem.entities
+      this.picture = this.itemPic
     },
     imgChange (e) {
       if (e) {
