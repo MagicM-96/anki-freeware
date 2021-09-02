@@ -11,8 +11,8 @@
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon v-on:click="() => $router.replace('/search')">
-        <v-icon>mdi-magnify</v-icon>
+      <v-btn icon v-on:click="() => $router.replace('/about')">
+        <v-icon>mdi-help-circle-outline</v-icon>
       </v-btn>
     </v-app-bar>
 
