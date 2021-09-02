@@ -45,7 +45,7 @@ if (savedPractises) {
 
 store.subscribe((mutation, state) => {
   localStorage.setItem('practises', JSON.stringify(state.practises))
-  if (mutation.type === 'createData' || mutation.type === 'editItem') {
+  if (mutation.type === 'createData' || mutation.type === 'editItem' || mutation.type === 'clearData') {
     console.log('trying to enter new image in IndexedDB . . .')
     transaction = db.transaction(['images'], 'readwrite')
     transaction.oncomplete = function (event) {
@@ -61,8 +61,12 @@ store.subscribe((mutation, state) => {
     if (mutation.type === 'editItem') {
       console.log('trying to delete ', mutation.payload.oldPic)
       objectStore.delete(mutation.payload.oldPic)
+    } else if (mutation.type === 'clearData') {
+      console.log('CLearing all data from database')
+      objectStore.clear()
+    } else {
+      objectStore.add({ id: mutation.payload.id, data: mutation.payload.picture })
     }
-    objectStore.add({ id: mutation.payload.id, data: mutation.payload.picture })
   } else {
     console.log(mutation.type)
   }
