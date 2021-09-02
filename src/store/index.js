@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     darkTheme: false,
     version: {
-      version: '0.0.2', // eslint-disable-next-line
+      version: '0.0.3', // eslint-disable-next-line
       date: process.env.NODE_ENV === 'production' ? __BUILDDATE__ : '~deveplopment use~'
     },
     practises: [],
@@ -15,6 +15,11 @@ export default new Vuex.Store({
     tasks: []
   },
   mutations: {
+    clearData (state) {
+      state.practises = []
+      state.pictures = {}
+      state.tasks = []
+    },
     loadSave (state, payload) {
       state.practises = payload.practises
     },
@@ -23,13 +28,13 @@ export default new Vuex.Store({
         state.pictures[picture.id] = picture.data
       })
     },
-    addPractise (state, payload) {
+    /*  addPractise (state, payload) {
       state.practises.push({
         pic: payload.pic || 'Picture is undefined',
         name: payload.name || 'Name is undefined',
         entities: payload.entities || []
       })
-    },
+    }, */
     createData (state, payload) {
       state.practises.push({
         pic: payload.id || 'Picture is undefined',
