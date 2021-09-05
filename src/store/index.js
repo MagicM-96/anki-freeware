@@ -13,7 +13,8 @@ export default new Vuex.Store({
     practises: [],
     pictures: {},
     tasks: [],
-    open: []
+    open: [],
+    closed: []
   },
   mutations: {
     clearData (state) {
@@ -21,18 +22,21 @@ export default new Vuex.Store({
       state.pictures = {}
       state.tasks = []
       state.open = []
+      state.closed = []
     },
     loadSave (state, payload) {
       state.practises = payload.practises || []
       state.tasks = payload.tasks || []
       state.open = payload.open || []
+      state.closed = payload.closed || []
       const praclen = state.practises.length
       const tasklen = state.tasks.length
       const oplen = state.open.length
-      if (tasklen + oplen < praclen) {
+      const closlen = state.closed.length
+      if (tasklen + oplen + closlen < praclen) {
         state.open = []
         for (let i = 0; i < praclen; i++) {
-          if (state.tasks.indexOf(i) === -1) {
+          if (state.tasks.indexOf(i) === -1 && state.closed.indexOf(i) === -1) {
             state.open.push(i)
           }
         }
@@ -51,6 +55,7 @@ export default new Vuex.Store({
       })
     }, */
     createData (state, payload) {
+      state.open.push(state.practises.length)
       state.practises.push({
         pic: payload.id || 'Picture is undefined',
         name: payload.name || 'Name is undefined',
