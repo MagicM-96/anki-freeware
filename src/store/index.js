@@ -12,16 +12,31 @@ export default new Vuex.Store({
     },
     practises: [],
     pictures: {},
-    tasks: []
+    tasks: [],
+    open: []
   },
   mutations: {
     clearData (state) {
       state.practises = []
       state.pictures = {}
       state.tasks = []
+      state.open = []
     },
     loadSave (state, payload) {
-      state.practises = payload.practises
+      state.practises = payload.practises || []
+      state.tasks = payload.tasks || []
+      state.open = payload.open || []
+      const praclen = state.practises.length
+      const tasklen = state.tasks.length
+      const oplen = state.open.length
+      if (tasklen + oplen < praclen) {
+        state.open = []
+        for (let i = 0; i < praclen; i++) {
+          if (state.tasks.indexOf(i) === -1) {
+            state.open.push(i)
+          }
+        }
+      }
     },
     loadPics (state, payload) {
       payload.forEach((picture) => {

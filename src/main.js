@@ -39,12 +39,16 @@ request.onupgradeneeded = function (event) {
 }
 
 const savedPractises = localStorage.getItem('practises')
-if (savedPractises) {
-  store.commit('loadSave', { practises: JSON.parse(savedPractises) })
+const savedTasks = localStorage.getItem('tasks')
+const savedOpen = localStorage.getItem('open')
+if (savedPractises || savedTasks || savedOpen) {
+  store.commit('loadSave', { practises: JSON.parse(savedPractises), tasks: JSON.parse(savedTasks), open: JSON.parse(savedOpen) })
 }
 
 store.subscribe((mutation, state) => {
   localStorage.setItem('practises', JSON.stringify(state.practises))
+  localStorage.setItem('tasks', JSON.stringify(state.tasks))
+  localStorage.setItem('open', JSON.stringify(state.open))
   if (mutation.type === 'createData' || mutation.type === 'editItem' || mutation.type === 'clearData') {
     console.log('trying to enter new image in IndexedDB . . .')
     transaction = db.transaction(['images'], 'readwrite')
