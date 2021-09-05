@@ -47,6 +47,13 @@ export default new Vuex.Store({
         state.pictures[picture.id] = picture.data
       })
     },
+    addTask (state) {
+      if (state.open.length > 0) {
+        const newprac = Math.floor(Math.random() * state.open.length)
+        state.tasks.push(state.open[newprac])
+        state.open.splice(newprac, 1)
+      }
+    },
     /*  addPractise (state, payload) {
       state.practises.push({
         pic: payload.pic || 'Picture is undefined',
