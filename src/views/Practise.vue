@@ -14,6 +14,18 @@
       </v-btn>
     </div>
   </v-main>
+  <v-main v-else-if="!!shuffledTasks && tasks.length === 0">
+    Du hast keine Aufgaben mehr. Du kannst jetzt hier von vorne starten:<br /><br />
+    <v-btn
+        rounded
+        x-large
+        color="primary"
+        dark
+        v-on:click="resetPractises()"
+      >
+        Neu starten
+      </v-btn>
+  </v-main>
   <v-main v-else>
     <div>
       <h1>Üben ist aktiv, derzeit {{ tasks.length }} Datensätze zum Üben ausgewählt</h1>
@@ -45,10 +57,10 @@
           <v-btn
             color="warning"
             class="ma-2"
-            :disabled="!finish || true"
+            :disabled="!finish"
             v-bind="attrs"
             v-on="on"
-            @click="loader = 'loading3'"
+            @click="closeTask"
           >
             Diese Übung abschließen
           </v-btn>
@@ -68,7 +80,7 @@
           <v-btn
             color="success"
             class="ma-2"
-            :disabled="!finish || data.length === tasks.length"
+            :disabled="!finish || data.length <= tasks.length + closed.length"
             v-bind="attrs"
             v-on="on"
             @click="newPractise"
@@ -133,25 +145,29 @@ export default {
     }
   },
   methods: {
-    startPractise () {
+    startPractise (init) {
       this.currentPractise = 0
       this.entities = 0
-      const initialPractise = 5
-      while (this.tasks.length < initialPractise && this.tasks.length < this.data.length) {
+      const initialPractise = init || 10
+      while (this.tasks.length < initialPractise && this.tasks.length + this.closed.length < this.data.length) {
         this.addPractise()
       }
       this.shuffledTasks = this.shuffle(this.tasks)
       console.log(this.shuffledTasks)
     },
     shuffle (a) {
-      var j, x, i
-      for (i = a.length - 1; i > 0; i--) {
+      var j, x, i, a2
+      a2 = []
+      a.forEach(element => {
+        a2.push(element)
+      })
+      for (i = a2.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1))
-        x = a[i]
-        a[i] = a[j]
-        a[j] = x
+        x = a2[i]
+        a2[i] = a2[j]
+        a2[j] = x
       }
-      return a
+      return a2
     },
     addPractise () {
       this.$store.commit('addTask')
@@ -160,9 +176,9 @@ export default {
       this.entities++
     },
     nextPractise () {
-      if (this.currentPractise + 1 >= this.tasks.length) {
+      if (this.currentPractise + 1 >= this.shuffledTasks.length) {
         alert('Du hast alle aktiven Übungen abgeschlossen, starte von vorne oder füge neue Aufgaben hinzu!')
-        this.startPractise()
+        this.startPractise(-1)
       } else {
         this.currentPractise++
         this.entities = 0
@@ -170,6 +186,17 @@ export default {
     },
     newPractise () {
       this.addPractise()
+      this.startPractise(-1)
+    },
+    closeTask () {
+      if (confirm('Diese Übung wir nicht mehr angezeigt. Das kann nicht rückgängig gemacht werden!\nBist Du sicher?')) {
+        const index = this.shuffledTasks[this.currentPractise]
+        this.$store.commit('closeTask', index)
+        this.nextPractise()
+      }
+    },
+    resetPractises () {
+      this.$store.commit('resetPractises')
       this.startPractise()
     }
   }

@@ -54,6 +54,29 @@ export default new Vuex.Store({
         state.open.splice(newprac, 1)
       }
     },
+    closeTask (state, taskID) {
+      if (taskID < state.practises.length) {
+        const index = state.tasks.indexOf(taskID)
+        if (index !== -1) {
+          state.tasks.splice(index, 1)
+          state.closed.push(taskID)
+        } else {
+          console.error('Could not find taskID in tasks: ' + taskID)
+        }
+      } else {
+        alert('Task could not be closed, unknown taskID: ' + taskID)
+      }
+    },
+    resetPractises (state) {
+      state.tasks = []
+      state.open = []
+      state.closed = []
+      if (state.practises.length > 0) {
+        for (let i = 0; i < state.practises.length; i++) {
+          state.open.push(i)
+        }
+      }
+    },
     /*  addPractise (state, payload) {
       state.practises.push({
         pic: payload.pic || 'Picture is undefined',
