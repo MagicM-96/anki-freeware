@@ -68,10 +68,10 @@
           <v-btn
             color="success"
             class="ma-2"
-            :disabled="!finish || data.length === tasks.length || true"
+            :disabled="!finish || data.length === tasks.length"
             v-bind="attrs"
             v-on="on"
-            @click="loader = 'loading4'"
+            @click="newPractise"
           >
             Neue Übung
           </v-btn>
@@ -86,6 +86,7 @@
       <i>Datensätze offen: </i> {{ open.length }}<br />
       <i>Datensätze abgeschlossen: </i> {{ closed.length }}<br />
       <i>Dezeit aktiver Datensatz: </i> {{ shuffledTasks[currentPractise] }}<br />
+      <i>Aktuelle Aufgabenreihenfolge: </i> {{ shuffledTasks }}<br />
     </div>
   </v-main>
 </template>
@@ -133,6 +134,8 @@ export default {
   },
   methods: {
     startPractise () {
+      this.currentPractise = 0
+      this.entities = 0
       const initialPractise = 5
       while (this.tasks.length < initialPractise && this.tasks.length < this.data.length) {
         this.addPractise()
@@ -159,11 +162,15 @@ export default {
     nextPractise () {
       if (this.currentPractise + 1 >= this.tasks.length) {
         alert('Du hast alle aktiven Übungen abgeschlossen, starte von vorne oder füge neue Aufgaben hinzu!')
-        this.currentPractise = 0
+        this.startPractise()
       } else {
         this.currentPractise++
+        this.entities = 0
       }
-      this.entities = 0
+    },
+    newPractise () {
+      this.addPractise()
+      this.startPractise()
     }
   }
 }
