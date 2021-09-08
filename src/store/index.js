@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     darkTheme: false,
     version: {
-      version: '0.0.3', // eslint-disable-next-line
+      version: '0.1.2', // eslint-disable-next-line
       date: process.env.NODE_ENV === 'production' ? __BUILDDATE__ : '~deveplopment use~'
     },
     practises: [],
