@@ -15,6 +15,15 @@
     </div>
   </v-main>
   <v-main v-else>
+    <div>
+      <h1>Üben ist aktiv, derzeit {{ tasks.length }} Datensätze zum Üben ausgewählt</h1>
+      <h2>Was siehst Du hier?</h2>
+      <img :src="pics[currentData.pic]" /><br />
+      <b>Name: </b><span v-if="entities >= 1">{{ currentData.name }}</span><br />
+      <ul v-if="entities >= 1">
+        <li v-for="entity in visibleEntities" v-bind:key="entity.name"><b>{{ entity.name }}</b>: {{ entity.value }}</li>
+      </ul>
+    </div>
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -23,9 +32,9 @@
           :disabled="finish"
           v-bind="attrs"
           v-on="on"
-          @click="loader = 'loading'"
+          @click="nextEntity"
         >
-          Nächste Eigenschaft
+          Weiter
         </v-btn>
       </template>
       <span>Deckt die aktuelle Eigenschaft auf und zeigt die nächste Eigenschaft an</span>
@@ -36,12 +45,12 @@
           <v-btn
             color="warning"
             class="ma-2"
-            :disabled="!finish"
+            :disabled="!finish || true"
             v-bind="attrs"
             v-on="on"
             @click="loader = 'loading3'"
           >
-            Diese Übung ausblenden
+            Diese Übung abschließen
           </v-btn>
         </template>
         <span>Diese Übung wird nicht mehr erscheinen</span>
@@ -50,7 +59,7 @@
         color="primary"
         class="ma-2"
         :disabled="!finish"
-        @click="loader = 'loading2'"
+        @click="nextPractise"
       >
         Nächste Übung
       </v-btn>
@@ -59,7 +68,7 @@
           <v-btn
             color="success"
             class="ma-2"
-            :disabled="!finish || data.length === tasks.length"
+            :disabled="!finish || data.length === tasks.length || true"
             v-bind="attrs"
             v-on="on"
             @click="loader = 'loading4'"
@@ -69,6 +78,14 @@
         </template>
         <span>Fügt eine neue Übung aus den erstellten Daten hinzu</span>
       </v-tooltip>
+    </div>
+    <div>
+      <b>Informationen: </b><br />
+      <i>Datensätze insgesamt: </i> {{ data.length }}<br />
+      <i>Datensätze im Übungspool: </i> {{ tasks.length }}<br />
+      <i>Datensätze offen: </i> {{ open.length }}<br />
+      <i>Datensätze abgeschlossen: </i> {{ closed.length }}<br />
+      <i>Dezeit aktiver Datensatz: </i> {{ shuffledTasks[currentPractise] }}<br />
     </div>
   </v-main>
 </template>
@@ -80,9 +97,9 @@ export default {
     return {
       pics: this.$store.state.pictures,
       data: this.$store.state.practises,
-      length: this.$store.state.practises.length,
       shuffledTasks: undefined,
-      finish: false
+      entities: 0,
+      currentPractise: 0
     }
   },
   computed: {
@@ -91,6 +108,27 @@ export default {
     },
     open: function () {
       return this.$store.state.open
+    },
+    closed: function () {
+      return this.$store.state.closed
+    },
+    currentData: function () {
+      return this.data[this.shuffledTasks[this.currentPractise]]
+    },
+    finish: function () {
+      return this.entities >= this.currentData.entities.length + 1
+    },
+    visibleEntities: function () {
+      const tmp = []
+      let i = 0
+      while (i < this.entities - 1) {
+        tmp.push({ name: this.currentData.entities[i].name, value: this.currentData.entities[i].value })
+        i++
+      }
+      if (i < this.currentData.entities.length) {
+        tmp.push({ name: this.currentData.entities[i].name, value: '' })
+      }
+      return tmp
     }
   },
   methods: {
@@ -114,6 +152,18 @@ export default {
     },
     addPractise () {
       this.$store.commit('addTask')
+    },
+    nextEntity () {
+      this.entities++
+    },
+    nextPractise () {
+      if (this.currentPractise + 1 >= this.tasks.length) {
+        alert('Du hast alle aktiven Übungen abgeschlossen, starte von vorne oder füge neue Aufgaben hinzu!')
+        this.currentPractise = 0
+      } else {
+        this.currentPractise++
+      }
+      this.entities = 0
     }
   }
 }
