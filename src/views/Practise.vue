@@ -156,8 +156,8 @@ export default {
       console.log(this.shuffledTasks)
     },
     shuffle (a) {
-      var j, x, i, a2
-      a2 = []
+      let j, x, i
+      const a2 = []
       a.forEach(element => {
         a2.push(element)
       })

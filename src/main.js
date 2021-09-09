@@ -18,8 +18,8 @@ if (!window.indexedDB) {
   window.alert('Ihr Browser unterstützt keine stabile Version von IndexedDB. Dieses und jenes Feature wird Ihnen nicht zur Verfügung stehen.')
 }
 
-var db, transaction, objectStore
-var request = window.indexedDB.open('anki-images', 3)
+let db, transaction, objectStore
+const request = window.indexedDB.open('anki-images', 3)
 
 request.onerror = function (event) {
   console.error(event)
@@ -33,7 +33,7 @@ request.onsuccess = function (event) {
 }
 
 request.onupgradeneeded = function (event) {
-  var db = event.target.result
+  const db = event.target.result
 
   db.createObjectStore('images', { keyPath: 'id' })
 }
