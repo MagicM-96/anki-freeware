@@ -105,6 +105,7 @@ export default {
             })
           })
           this.loading = false
+          this.$router.replace('/')
         }
       }
     }
