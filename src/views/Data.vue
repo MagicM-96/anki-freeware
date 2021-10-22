@@ -131,7 +131,7 @@ export default {
     }
   },
   mounted: function () {
-    if (this.activeItem !== {}) {
+    if (this.activeItem && Object.keys(this.activeItem).length !== 0) {
       this.loadItem()
     }
   },

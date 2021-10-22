@@ -67,7 +67,8 @@ store.subscribe((mutation, state) => {
     if (mutation.type === 'editItem') {
       console.log('trying to delete ', mutation.payload.oldPic)
       objectStore.delete(mutation.payload.oldPic)
-    } else if (mutation.type === 'clearData') {
+    }
+    if (mutation.type === 'clearData') {
       console.log('CLearing all data from database')
       objectStore.clear()
     } else {
